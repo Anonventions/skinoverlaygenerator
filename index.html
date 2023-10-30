@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Skin Cutter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label, select, input, button {
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Skin Cutter</h1>
+    <div class="container">
+        <label for="skinInput">Upload your skin:</label>
+        <input type="file" id="skinInput" accept="image/png" />
+        <label for="templateSelector">Select a template:</label>
+        <select id="templateSelector">
+            <!-- Options will be populated here by JavaScript -->
+        </select>
+        <button onclick="cutSkin()">Cut Skin</button>
+        <canvas id="canvas" width="64" height="64" style="display: none;"></canvas>
+        <a id="downloadLink" style="display: none;">Download Modified Skin</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const templateSelector = document.getElementById('templateSelector');
+            const templates = [
+                { name: 'Template 1', url: 'https://github.com/DCUGITHUBZONE/skinoverlaygenerator/blob/main/templates/test.png' },
+                { name: 'Template 2', url: 'https://cdn.jsdelivr.net/gh/DCUGITHUBZONE/skinoverlaygenerator@main/templates/test.png' }
+                // Add more templates as needed
+            ];
+            templates.forEach(template => {
+                const option = document.createElement('option');
+                option.value = template.url;
+                option.innerText = template.name;
+                templateSelector.appendChild(option);
+            });
+        });
+
+        function cutSkin() {
+            const skinInput = document.getElementById('skinInput');
+            const templateSelector = document.getElementById('templateSelector');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const downloadLink = document.getElementById('downloadLink');
+
+            if (!skinInput.files || !skinInput.files[0]) {
+                alert('Please upload a skin first.');
+                return;
+            }
+
+            const skinImage = new Image();
+            const templateImage = new Image();
+
+            skinImage.onload = () => {
+                templateImage.src = templateSelector.value;
+            };
+
+            templateImage.onload = () => {
+                ctx.drawImage(skinImage, 0, 0);
+                const skinData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(templateImage, 0, 0);
+                const templateData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < skinData.data.length; i += 4) {
+                    if (templateData.data[i + 3] > 0) {
+                        skinData.data[i] = templateData.data[i];
+                        skinData.data[i + 1] = templateData.data[i + 1];
+                        skinData.data[i + 2] = templateData.data[i + 2];
+                    }
+                }
+
+                ctx.putImageData(skinData, 0, 0);
+                const dataUrl = canvas.toDataURL('image/png');
+                downloadLink.href = dataUrl;
+                downloadLink.download = 'modified_skin.png';
+                downloadLink.style.display = 'block';
+            };
+
+            skinImage.src = URL.createObjectURL(skinInput.files[0]);
+        }
+    </script>
+</body>
+</html>
