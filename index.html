@@ -36,20 +36,21 @@
         <a id="downloadLink" style="display: none;">Download Modified Skin</a>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const templateSelector = document.getElementById('templateSelector');
-            const templates = [
-                { name: 'Template 1', url: 'https://github.com/DCUGITHUBZONE/skinoverlaygenerator/blob/main/templates/test.png' },
-                { name: 'Template 2', url: 'https://cdn.jsdelivr.net/gh/DCUGITHUBZONE/skinoverlaygenerator@main/templates/test.png' }
-                // Add more templates as needed
-            ];
-            templates.forEach(template => {
-                const option = document.createElement('option');
-                option.value = template.url;
-                option.innerText = template.name;
-                templateSelector.appendChild(option);
-            });
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    const templateSelector = document.getElementById('templateSelector');
+    const templates = [
+        { name: 'Template 1', url: 'https://raw.githubusercontent.com/DCUGITHUBZONE/skinoverlaygenerator/main/templates/test.png' },
+        { name: 'Template 2', url: 'https://cdn.jsdelivr.net/gh/DCUGITHUBZONE/skinoverlaygenerator@main/templates/test.png' }
+        // Add more templates as needed
+    ];
+    templates.forEach(template => {
+        const option = document.createElement('option');
+        option.value = template.url;
+        option.innerText = template.name;
+        templateSelector.appendChild(option);
+    });
+});
+
 
         function cutSkin() {
             const skinInput = document.getElementById('skinInput');
